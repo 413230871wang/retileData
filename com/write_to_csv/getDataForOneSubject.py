@@ -2,26 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import csv
+import codecs
 
 # 网页的请求头
 header = {
 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 }
 output = open('/Users/mfhj-dz-001-068/pythonData/xiaoyang/name.csv','a',newline='',encoding='gbk')
-
-def get_page(url):
-    # url链接
-    response = requests.get(url, headers=header)
-
-    # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
-    soup = BeautifulSoup(response.text, 'html.parser')
-    result_div = soup.find_all('div', {'class': 'right_room clearfix'})
-    soup_p = BeautifulSoup(str(result_div), 'lxml')
-    result_p = soup_p.find_all('a')
-    for i in result_p:
-        get_next_level(i.get('href'))
-
-    output.close()
 
 def get_next_level(url):
     response = requests.get(url, headers=header)
@@ -52,35 +39,21 @@ def get_page_detail(url,branch_name):
     soup = BeautifulSoup(response.text, 'html.parser')
     result_h1 = soup.find_all('h1', {'class': 'text_title'})
     result_h3 = soup.find_all('div', {'class': 'one_info clearfix'})
-    fbrq = ''
-    ywbt = ''
-    zdz = ''
-    cc = ''
-    for i in result_h3:
-        if ('发布日期' in i.text):
-            fbrq = i.find('p').text
-        if ('英文标题' in i.text):
-            ywbt = i.find('p').text
-        if ('制定者' in i.text):
-            zdz = i.find('p').text
-        if ('出处' in i.text):
-            cc = i.find('p').text
+    soup_p = BeautifulSoup(str(result_h3), 'lxml')
+    result_p = soup_p.find_all('p')
     fieldnames = ['科室', '名称', '发布日期', '英文标题', '制定者', '出处']
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     # 注意header是个好东西
     writer.writerow(
-        {'科室': branch_name,
-         '名称': result_h1[0].text,
-         '发布日期': fbrq,
-         '英文标题': ywbt,
-         '制定者': zdz,
-         '出处': cc})
+        {'科室': branch_name, '名称': result_h1[0].text, '发布日期': result_p[1].text, '英文标题': result_p[2].text,
+         '制定者': result_p[3].text,
+         '出处': result_p[4].text})
 
 
 
 if __name__ == '__main__':
-    url = 'http://guide.medlive.cn/guideline/list'
-    get_page(url)
+    url = 'http://guide.medlive.cn/guideline/list?type=all&year=0&sort=publish&branch=2'
+    get_next_level(url)
 
 
 
