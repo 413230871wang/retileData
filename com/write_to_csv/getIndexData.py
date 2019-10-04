@@ -13,8 +13,8 @@ response = requests.get(url, headers=header)
 
 # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
 soup = BeautifulSoup(response.text, 'html.parser')
-result_div = soup.find_all('div',{'class':'right_room clearfix'})
+result_div = soup.find_all('div',{'class':'right_room'})
 soup_p = BeautifulSoup(str(result_div),'lxml')
 result_p = soup_p.find_all('a')
 for i in result_p:
-    print(i.get('href'))
+    print(i.text+':'+i.get('href').replace('type=all','type=guide'))

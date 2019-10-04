@@ -1,13 +1,18 @@
+#encoding='utf-8'
 import requests
 from bs4 import BeautifulSoup
-import re
 import csv
+import codecs
+from selenium import webdriver
+from time import sleep
+import http.client
 
 # 网页的请求头
 header = {
 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 }
-output = open('/Users/mfhj-dz-001-068/pythonData/xiaoyang/name.csv','a',newline='',encoding='gbk')
+output = codecs.open('D:\pythonFile\\names28.csv','a',encoding='utf-8')
+http.client._MAXHEADERS = 20000
 
 def get_page(url):
     # url链接
@@ -15,11 +20,11 @@ def get_page(url):
 
     # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
     soup = BeautifulSoup(response.text, 'html.parser')
-    result_div = soup.find_all('div', {'class': 'right_room clearfix'})
+    result_div = soup.find_all('div', {'class': 'right_room'})
     soup_p = BeautifulSoup(str(result_div), 'lxml')
     result_p = soup_p.find_all('a')
     for i in result_p:
-        get_next_level(i.get('href'))
+        is_have_next_page(i.get('href').replace('type=all','type=guide'))
 
     output.close()
 
@@ -35,18 +40,55 @@ def get_next_level(url):
     for i in result_a:
         get_page_detail(i.get('href'),result_input[0].get('value'))
 
-# def is_have_next_page(soup_idex):
-#     result_next_page = soup_idex.find_all('a',text='下一页')
-#     if len(result_next_page) != 0:
-#         x_str = [x.get("href") for x in result_next_page][0]
-#         next_url = pre_url_next_level + x_str
-#         get_next_level(next_url,pre_url_next_level)
-#     else:
-#         print('没有下一页')
+def is_have_next_page(soup_url):
+    browser = webdriver.Chrome(executable_path='D:\DownInIE\chromedriver_win32\chromedriver.exe')
+    browser.maximize_window()
+
+    browser.get(soup_url)
+    sleep(1)
+    browser.execute_script("""
+        (function () {
+            var y = 0;
+            var step = 210;
+            window.scroll(0, 0);
+            function f() {
+                if (y <= document.body.scrollHeight) {
+                    y += step;
+                    window.scroll(0, y);
+                    setTimeout(f, 100);
+                } else {
+                    window.scroll(0, 0);
+                    document.title += "scroll-done";
+                }
+            }
+            setTimeout(f, 1000);
+        })();
+        """)
+    print("下拉中...")
+    while True:
+        if "scroll-done" in browser.title:
+            break
+    else:
+        print("还没有拉到最底端...")
+
+    # # url链接
+    # url = 'http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=1'
+    # response = requests.get(url, headers=header)
+    #
+    # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
+    soup = BeautifulSoup(browser.page_source, 'html.parser')
+    browser.close()
+    result_input = soup.find_all('input', {'class': 'btn select'})
+    print(result_input[0].get('value'))
+    result_p = soup.find_all('p', {'class': 'guide_title'})
+    soup_p = BeautifulSoup(str(result_p), 'lxml')
+    result_a = soup_p.find_all('a')
+    for i in result_a:
+        get_page_detail(i.get('href'), result_input[0].get('value'))
 
 #爬取页面想要的数据
 def get_page_detail(url,branch_name):
-    response = requests.get(url, headers=header)
+    response = requests.get(url, headers=header,timeout=5000)
 
     # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -75,12 +117,15 @@ def get_page_detail(url,branch_name):
          '英文标题': ywbt,
          '制定者': zdz,
          '出处': cc})
+    print('ok')
+    response.close()
 
 
 
 if __name__ == '__main__':
-    url = 'http://guide.medlive.cn/guideline/list'
-    get_page(url)
+    # url = 'http://guide.medlive.cn/guideline/list'
+    # get_page(url)
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=28')
 
 
 

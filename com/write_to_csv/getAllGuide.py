@@ -8,7 +8,7 @@ header = {
 }
 
 # url链接
-url = 'http://guide.medlive.cn/guideline/list?type=all&year=0&sort=publish&branch=1'
+url = 'http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=1'
 response = requests.get(url, headers=header)
 
 # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
