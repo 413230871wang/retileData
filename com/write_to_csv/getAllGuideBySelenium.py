@@ -10,11 +10,23 @@ header = {
 }
 # browser = webdriver.Firefox(executable_path='D:\DownInIE\geckodriver-v0.25.0-win64\geckodriver.exe')
 http.client._MAXHEADERS = 20000
-browser = webdriver.Chrome()
+browser = webdriver.Chrome(executable_path='D:\DownInIE\chromedriver_win32\chromedriver_win32\chromedriver.exe')
 browser.maximize_window()
 
-browser.get('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=28')
+browser.get('http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
 sleep(1)
+browser.find_element_by_class_name('login-rightTab').click()
+print(browser.find_element_by_id('username'))
+print(browser.find_element_by_id('username').get_attribute('type'))
+#输入账号密码
+browser.find_element_by_id('username').send_keys("18610229039")
+sleep(1)
+browser.find_element_by_id('password').send_keys("891655")
+sleep(1)
+#单击登录按钮
+browser.find_element_by_id('loginsubmit').click()
+sleep(1)
+
 # for i in range(1,6):
 #     print(1)
 #     browser.execute_script('window.scrollTo(0,document.body.scrollHeight)')

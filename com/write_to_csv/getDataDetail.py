@@ -7,7 +7,7 @@ header = {
 }
 output = open('D:\pythonFile\\names.csv','a',newline='')
 
-url = 'http://guide.medlive.cn/guideline/18677'
+url = 'http://guide.medlive.cn/guideline/19002'
 response = requests.get(url, headers=header)
 
 # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
