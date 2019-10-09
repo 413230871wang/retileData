@@ -41,7 +41,7 @@ def get_next_level(url):
         get_page_detail(i.get('href'),result_input[0].get('value'))
 
 def is_have_next_page(soup_url):
-    browser = webdriver.Chrome(executable_path='D:\DownInIE\chromedriver_win32\chromedriver.exe')
+    browser = webdriver.Chrome(executable_path='/pythonApp/chromedriver')
     browser.maximize_window()
 
     browser.get(soup_url)
@@ -94,6 +94,8 @@ def get_page_detail(url,branch_name):
     soup = BeautifulSoup(response.text, 'html.parser')
     result_h1 = soup.find_all('h1', {'class': 'text_title'})
     result_h3 = soup.find_all('div', {'class': 'one_info clearfix'})
+    result_pdf = soup.find_all('div', {'class': 'pdf_info'})[0]
+    print('/' + result_pdf.find('a').get('fid') + '/' + result_pdf.find('a').text)
     fbrq = ''
     ywbt = ''
     zdz = ''

@@ -2,39 +2,41 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from time import sleep
+import http.client
 
 # 网页的请求头
 header = {
 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 }
 # browser = webdriver.Firefox(executable_path='D:\DownInIE\geckodriver-v0.25.0-win64\geckodriver.exe')
-browser = webdriver.Chrome(executable_path='D:\DownInIE\chromedriver_win32\chromedriver.exe')
+http.client._MAXHEADERS = 20000
+browser = webdriver.Chrome()
 browser.maximize_window()
 
-browser.get('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=5')
-sleep(3)
+browser.get('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=28')
+sleep(1)
 # for i in range(1,6):
 #     print(1)
 #     browser.execute_script('window.scrollTo(0,document.body.scrollHeight)')
 #     sleep(1)
 browser.execute_script("""
     (function () {
-        var y = 0;
-        var step = 110;
-        window.scroll(0, 0);
-        function f() {
-            if (y <= document.body.scrollHeight) {
-                y += step;
-                window.scroll(0, y);
-                setTimeout(f, 100);
-            } else {
-                window.scroll(0, 0);
-                document.title += "scroll-done";
+            var y = 0;
+            var step = 210;
+            window.scroll(0, 0);
+            function f() {
+                if (y <= document.body.scrollHeight) {
+                    y += step;
+                    window.scroll(0, y);
+                    setTimeout(f, 100);
+                } else {
+                    window.scroll(0, 0);
+                    document.title += "scroll-done";
+                }
             }
-        }
-        setTimeout(f, 1000);
-    })();
-    """)
+            setTimeout(f, 1000);
+        })();
+        """)
 print("下拉中...")
 # time.sleep(180)
 while True:
