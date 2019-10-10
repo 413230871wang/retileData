@@ -7,7 +7,7 @@ header = {
 }
 output = open('D:\pythonFile\\names.csv','a',newline='')
 
-url = 'http://guide.medlive.cn/guideline/19002'
+url = 'http://guide.medlive.cn/guideline/19004'
 response = requests.get(url, headers=header)
 
 # 通过BeautifulSoup进行解析出每个房源详细列表并进行打印
@@ -16,6 +16,7 @@ result_h1 = soup.find_all('h1', {'class': 'text_title'})
 result_h3 = soup.find_all('div', {'class': 'one_info clearfix'})
 result_pdf = soup.find_all('div', {'class': 'pdf_list'})[0]
 print('http://webres.medlive.cn/upload/temp/06/4009371/'+result_pdf.find('a').get('fid')+'/'+urllib.parse.quote(result_pdf.find('a').get('fn')).replace('%20','%2B'))
+print('http://webres.medlive.cn/upload/temp/06/4009371/'+result_pdf.find('a').get('fid')+'/'+result_pdf.find('a').get('fn'))
 fbrq = ''
 ywbt = ''
 zdz = ''
