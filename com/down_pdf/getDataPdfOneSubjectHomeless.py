@@ -22,46 +22,49 @@ profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/oc
 
 #Firefox headless模式运行
 options = webdriver.FirefoxOptions()
-options.add_argument('--headless')
+# options.add_argument('--headless')
+# options.add_argument("--start-maximized")
 
 #实例化对象时，将设置的Firefox参数传入
 browser = webdriver.Firefox(firefox_profile=profile,options=options)
 
 def is_have_next_page(soup_url):
-    # 登陆账号
-    browser.get(
-        'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
-    sleep(1)
-    browser.find_element_by_class_name('login-rightTab').click()
-    # 输入账号密码
-    browser.find_element_by_id('username').send_keys("18610229039")
-    sleep(1)
-    browser.find_element_by_id('password').send_keys("891655")
-    sleep(1)
-    # 单击登录按钮
-    browser.find_element_by_id('loginsubmit').click()
-    sleep(1)
+    browser.maximize_window()
+    # # 登陆账号
+    # browser.get(
+    #     'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
+    # sleep(1)
+    # browser.find_element_by_class_name('login-rightTab').click()
+    # # 输入账号密码
+    # browser.find_element_by_id('username').send_keys("18610229039")
+    # sleep(1)
+    # browser.find_element_by_id('password').send_keys("891655")
+    # sleep(1)
+    # # 单击登录按钮
+    # browser.find_element_by_id('loginsubmit').click()
+    # sleep(1)
     # 跳到科室页面刷数据
     browser.get(soup_url)
     sleep(1)
     browser.execute_script("""
-        (function () {
-            var y = 0;
-            var step = 210;
+    (function () {
+    var y = 0;
+    var winHeight = window.innerHeight;
+    var step = 210;
+    window.scroll(0, 0);
+    function f() {
+        if (y <= document.body.scrollHeight) {
+            y += step;
+            window.scroll(0, y);
+            setTimeout(f, 100);
+        } else {
             window.scroll(0, 0);
-            function f() {
-                if (y <= document.body.scrollHeight) {
-                    y += step;
-                    window.scroll(0, y);
-                    setTimeout(f, 100);
-                } else {
-                    window.scroll(0, 0);
-                    document.title += "scroll-done";
-                }
-            }
-            setTimeout(f, 1000);
-        })();
-        """)
+            document.title += "scroll-done";
+        }
+    }
+    setTimeout(f, 1000);
+    })();
+    """)
     print("下拉中...")
     while True:
         if "scroll-done" in browser.title:
@@ -81,9 +84,9 @@ def is_have_next_page(soup_url):
     soup_p = BeautifulSoup(str(result_p), 'lxml')
     result_a = soup_p.find_all('a')
     print(len(result_a))
-    for i in result_a:
-        get_page_detail(i.get('href'))
-    browser.quit()
+    # for i in result_a:
+    #     # get_page_detail(i.get('href'))
+    browser.close()
 
 #爬取页面想要的数据
 def get_page_detail(url):
@@ -96,7 +99,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=26')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=8')
 
 
 

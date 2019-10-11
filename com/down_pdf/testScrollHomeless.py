@@ -5,21 +5,28 @@ from time import sleep
 import http.client
 
 # 网页的请求头
-header = {
+header={
 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
 }
 http.client._MAXHEADERS = 20000
 #文件下载路径
 download_location = '/Users/mfhj-dz-001-068/pythonData/pdfData'
-prefs = {'download.default_directory': download_location}
-option = webdriver.ChromeOptions()
-option.add_experimental_option('prefs',prefs)
-# option.add_argument("--start-maximized")
-#实例化对象时，将设置的Firefox参数传入
-browser = webdriver.Chrome(options=option)
+chrome_options=webdriver.ChromeOptions()
+chrome_options.headless=True
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+prefs={"download.prompt_for_download":False,
+"download.directory_upgrade":True,
+"safebrowsing.enabled":False,
+"safebrowsing.disable_download_protection":True
+}
+chrome_options.add_experimental_option("prefs",prefs)
+browser=webdriver.Chrome(chrome_options=chrome_options)
+browser.command_executor._commands["send_command"]=("POST",'/session/$sessionId/chromium/send_command')
+params={'cmd':'Page.setDownloadBehavior','params':{'behavior':'allow','downloadPath':download_location}}
+command_result=browser.execute("send_command",params)
 
 def is_have_next_page(soup_url):
-    browser.maximize_window()
     # 登陆账号
     browser.get(
         'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
@@ -39,7 +46,6 @@ def is_have_next_page(soup_url):
     browser.execute_script("""
         (function () {
             var y = 0;
-            var winHeight = window.innerHeight;
             var step = 210;
             window.scroll(0, 0);
             function f() {
@@ -89,7 +95,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=6')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=8')
 
 
 

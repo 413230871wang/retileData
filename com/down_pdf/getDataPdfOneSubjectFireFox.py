@@ -49,7 +49,7 @@ def is_have_next_page(soup_url):
                     document.title += "scroll-done";
                 }
             }
-            setTimeout(f, 10000);
+            setTimeout(f, 1000);
         })();
         """)
     print("下拉中...")
@@ -86,7 +86,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=26')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=9')
 
 
 
