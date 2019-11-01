@@ -22,7 +22,7 @@ profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/oc
 
 #Firefox headless模式运行
 options = webdriver.FirefoxOptions()
-# options.add_argument('--headless')
+options.add_argument('--headless')
 # options.add_argument("--start-maximized")
 
 #实例化对象时，将设置的Firefox参数传入
@@ -30,19 +30,19 @@ browser = webdriver.Firefox(firefox_profile=profile,options=options)
 
 def is_have_next_page(soup_url):
     browser.maximize_window()
-    # # 登陆账号
-    # browser.get(
-    #     'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
-    # sleep(1)
-    # browser.find_element_by_class_name('login-rightTab').click()
-    # # 输入账号密码
-    # browser.find_element_by_id('username').send_keys("18610229039")
-    # sleep(1)
-    # browser.find_element_by_id('password').send_keys("891655")
-    # sleep(1)
-    # # 单击登录按钮
-    # browser.find_element_by_id('loginsubmit').click()
-    # sleep(1)
+    # 登陆账号
+    browser.get(
+        'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
+    sleep(1)
+    browser.find_element_by_class_name('login-rightTab').click()
+    # 输入账号密码
+    browser.find_element_by_id('username').send_keys("18610229039")
+    sleep(1)
+    browser.find_element_by_id('password').send_keys("891655")
+    sleep(1)
+    # 单击登录按钮
+    browser.find_element_by_id('loginsubmit').click()
+    sleep(1)
     # 跳到科室页面刷数据
     browser.get(soup_url)
     sleep(1)
@@ -99,7 +99,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=8')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=1')
 
 
 

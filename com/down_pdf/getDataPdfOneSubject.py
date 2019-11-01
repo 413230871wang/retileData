@@ -19,7 +19,6 @@ option.add_experimental_option('prefs',prefs)
 browser = webdriver.Chrome(options=option)
 
 def is_have_next_page(soup_url):
-    browser.maximize_window()
     # 登陆账号
     browser.get(
         'http://www.medlive.cn/auth/login?service=http%3A%2F%2Fguide.medlive.cn%2Fguideline%2Flist%3Ftype%3Dguide%26sort%3Dpublish%26year%3D0%26branch%3D0')
@@ -89,7 +88,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=6')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=1')
 
 
 
