@@ -71,8 +71,8 @@ def is_have_next_page(soup_url):
     soup_p = BeautifulSoup(str(result_p), 'lxml')
     result_a = soup_p.find_all('a')
     print(len(result_a))
-    for i in result_a:
-        get_page_detail(i.get('href'))
+    for i in range(len(result_a)-100,len(result_a)-1):
+        get_page_detail(result_a[i].get('href'))
     browser.close()
 
 #爬取页面想要的数据
@@ -86,7 +86,7 @@ def get_page_detail(url):
 
 
 if __name__ == '__main__':
-    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=14')
+    is_have_next_page('http://guide.medlive.cn/guideline/list?type=guide&year=0&sort=publish&branch=5')
 
 
 
